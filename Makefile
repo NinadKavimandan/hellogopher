@@ -16,6 +16,11 @@ M = $(shell printf "\033[34;1m▶\033[0m")
 
 export GO111MODULE=on
 
+.PHONY: help
+help:
+	@grep -hE '^[ a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-17s\033[0m %s\n", $$1, $$2}'
+
 .PHONY: all
 all: fmt lint | $(BIN) ; $(info $(M) building executable…) @ ## Build program binary
 	$Q $(GO) build \
@@ -95,11 +100,6 @@ fmt: ; $(info $(M) running gofmt…) @ ## Run gofmt on all source files
 clean: ; $(info $(M) cleaning…)	@ ## Cleanup everything
 	@rm -rf $(BIN)
 	@rm -rf test/tests.* test/coverage.*
-
-.PHONY: help
-help:
-	@grep -hE '^[ a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-17s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: version
 version:
